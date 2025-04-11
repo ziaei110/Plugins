@@ -1,46 +1,41 @@
 // ذخیره رنگ اصلی متن
-let originalColors = new WeakMap();
+const originalColors = new WeakMap();
 
 document.addEventListener('click', function(e) {
   if (e.ctrlKey && !e.shiftKey && !e.altKey) {
     try {
       const element = e.target;
       
-      // فقط برای عناصر متنی
+      // فقط برای عناصر متنی مناسب
       if (!element || !element.style || 
-          !(element instanceof HTMLElement) || 
           element.tagName === 'INPUT' || 
-          element.tagName === 'TEXTAREA') {
+          element.tagName === 'TEXTAREA' ||
+          element.tagName === 'BUTTON') {
         return;
       }
 
       // ذخیره رنگ اصلی اگر وجود نداشته باشد
       if (!originalColors.has(element)) {
-        originalColors.set(element, {
-          color: element.style.color || getComputedStyle(element).color,
-          dir: element.style.direction || getComputedStyle(element).direction
-        });
+        originalColors.set(element, getComputedStyle(element).color);
       }
 
       // تغییر جهت
-      const currentDir = element.style.direction || getComputedStyle(element).direction;
+      const currentDir = getComputedStyle(element).direction;
       const newDir = currentDir === 'rtl' ? 'ltr' : 'rtl';
       
       // اعمال تغییرات
       element.style.direction = newDir;
       element.style.textAlign = newDir === 'rtl' ? 'right' : 'left';
       
-      // تغییر موقت رنگ متن
-      element.style.color = newDir === 'rtl' ? '#0066cc' : '#cc6600';
-      element.style.transition = 'color 0.3s, text-align 0.3s';
+      // ایجاد افکت چشمک زدن با تغییر opacity
+      element.style.transition = 'opacity 0.2s ease';
+      element.style.opacity = '0.7';
       
-      // بازگشت به رنگ اصلی پس از 1 ثانیه
+      // بازگشت سریع به حالت اولیه (300ms)
       setTimeout(() => {
-        const original = originalColors.get(element);
-        if (original) {
-          element.style.color = original.color;
-        }
-      }, 1000);
+        element.style.opacity = '1';
+        element.style.transition = 'none';
+      }, 300);
       
     } catch (err) {
       console.error('خطا در تغییر جهت متن:', err);
