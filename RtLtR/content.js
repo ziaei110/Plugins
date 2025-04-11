@@ -1,44 +1,71 @@
-// ذخیره رنگ اصلی متن
+// 1. ابتدا متغیرها و استایل‌ها را تعریف می‌کنیم
 const originalColors = new WeakMap();
 
+// ایجاد و اضافه کردن استایل‌های مورد نیاز
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes pulse-animation {
+    0%, 100% {
+      color: inherit;
+      text-shadow: none;
+      transform: scale(1);
+    }
+    50% {
+      color: #ff2200;
+      text-shadow: 0 0 12px #ff5500;
+      transform: scale(1.05);
+    }
+  }
+  
+  .pulse-effect {
+    animation: pulse-animation 0.4s ease-out;
+    display: inline-block;
+    will-change: transform, color, text-shadow;
+  }
+`;
+document.head.appendChild(style);
+
+// 2. رویداد کلیک را اضافه می‌کنیم
 document.addEventListener('click', function(e) {
   if (e.ctrlKey && !e.shiftKey && !e.altKey) {
     try {
       const element = e.target;
-      
-      // فقط برای عناصر متنی مناسب
+
+      /*
+      // بررسی عناصر معتبر
       if (!element || !element.style || 
           element.tagName === 'INPUT' || 
-          element.tagName === 'TEXTAREA' ||
-          element.tagName === 'BUTTON') {
+          element.tagName === 'TEXTAREA') {
         return;
       }
+      */
 
-      // ذخیره رنگ اصلی اگر وجود نداشته باشد
+      // ذخیره استایل‌های اصلی
       if (!originalColors.has(element)) {
-        originalColors.set(element, getComputedStyle(element).color);
+        originalColors.set(element, {
+          color: getComputedStyle(element).color,
+          textShadow: getComputedStyle(element).textShadow,
+          fontWeight: getComputedStyle(element).fontWeight
+        });
       }
 
-      // تغییر جهت
+      // تغییر جهت متن
       const currentDir = getComputedStyle(element).direction;
       const newDir = currentDir === 'rtl' ? 'ltr' : 'rtl';
-      
-      // اعمال تغییرات
       element.style.direction = newDir;
       element.style.textAlign = newDir === 'rtl' ? 'right' : 'left';
       
-      // ایجاد افکت چشمک زدن با تغییر opacity
-      element.style.transition = 'opacity 0.2s ease';
-      element.style.opacity = '0.7';
+      // اعمال افکت پالس
+      element.classList.add('pulse-effect');
       
-      // بازگشت سریع به حالت اولیه (300ms)
-      setTimeout(() => {
-        element.style.opacity = '1';
-        element.style.transition = 'none';
-      }, 300);
+      // حذف کلاس پس از اتمام انیمیشن
+      element.addEventListener('animationend', function handler() {
+        element.classList.remove('pulse-effect');
+        element.removeEventListener('animationend', handler);
+      });
       
     } catch (err) {
-      console.error('خطا در تغییر جهت متن:', err);
+      console.error('خطا در اجرای افکت:', err);
     }
   }
 }, true);
