@@ -1,7 +1,7 @@
-open about:debugging in firefox
-click on this firefox 
-load temporary add-on
-select manifest.json
+open about:debugging in firefox  
+click on this firefox  
+load temporary add-on  
+select manifest.json  
 
 
 
