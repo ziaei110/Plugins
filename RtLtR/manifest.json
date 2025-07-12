@@ -8,5 +8,9 @@
     "matches": ["<all_urls>"],
     "js": ["content.js"],
     "run_at": "document_end"
-  }]
+  }],
+  "icons": {
+    "48": "ZiaTec48.png",
+    "128": "ZiaTec128.png"
+  }
 }
