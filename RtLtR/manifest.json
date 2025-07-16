@@ -1,16 +1,19 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "RTL/LTR Toggler",
   "version": "1.3",
   "description": "تغییر جهت متن با Ctrl+Click",
   "permissions": ["activeTab"],
-  "content_scripts": [{
-    "matches": ["<all_urls>"],
-    "js": ["content.js"],
-    "run_at": "document_end"
-  }],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
   "icons": {
-    "48": "ZiaTec48.png",
-    "128": "ZiaTec128.png"
+    "16": "ZTL48.png",
+    "48": "ZTL48.png",
+    "128": "ZTL128.png"
   }
 }
